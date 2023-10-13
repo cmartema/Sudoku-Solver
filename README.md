@@ -22,6 +22,7 @@ In the starter zip, `sudokus start.txt`, contains hundreds of sample unsolved Su
 
 The first board in `sudokus start.txt` is represented as the string:
 
+'''
 0 0 3 0 2 0 6 0 0
 9 0 0 3 0 5 0 0 1
 0 0 1 8 0 6 4 0 0
@@ -31,6 +32,7 @@ The first board in `sudokus start.txt` is represented as the string:
 0 0 2 6 0 9 5 0 0
 8 0 0 2 0 3 0 0 9
 0 0 5 0 1 0 3 0 0
+'''
 
 
 Your program will generate `output.txt`, containing a single line of text representing the finished Sudoku board. E.g.:
@@ -64,19 +66,6 @@ Sudoku:
 Solution:
 812753649943682175675491283154237896369845721287169534521974368438526917796318452
 
-
-## IV. What You Need To Submit
-
-1. Your `sudoku.py` file (and any other Python code dependency).
-2. A `README.txt` with your results, including:
-   - The number of boards you could solve from `sudokus start.txt`.
-   - Running time statistics: min, max, mean, and standard deviation.
-
-## V. Before You Submit
-
-- Ensure that your file is named `sudoku.py`.
-- Ensure that your file compiles and runs.
-- After your submission on Gradescope, you will receive feedback in 5 minutes on whether your code has the proper filename, output format, and execution time. Please address any issues and resubmit before the deadline.
 
 
 
