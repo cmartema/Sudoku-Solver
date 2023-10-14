@@ -30,12 +30,55 @@ def board_to_string(board):
             ordered_vals.append(str(board[r + c]))
     return ''.join(ordered_vals)
 
+def is_complete(board):
+    """Checks to see if there are any values removed."""
+    for var in board:
+        if board[var] == 0:
+            return False # There is at least one unassigned variable
+        return True # All variables are assigned.
+    
+def  select_unassigned_var(board):
+    """Chooses the unassigned variable with the smallest domain size (MRV)."""
+    var = None
+    min_domain = float('inf') #Sets it to infinity 
+    for unassigned_var in board:
+        if board[var] == 0:
+            if domain_size(var, board) < min_domain:
+                var = unassigned_var
+                min_domain = domain_size(var, board)
+    return var
+
+
+def ordered_domain_values():
+    pass
+def is_consistent():
+    pass
+
+def domain_size(var, board):
+    if board[var] != 0:
+        return 1
+    else:
+        Valid_values = set(range(1, 9))
+        row, col = get_row_and_col(var)
+
 
 def backtracking(board):
     """Takes a board and returns solved board."""
     # TODO: implement this
-    solved_board = board
-    return solved_board
+    failure = board
+    if is_complete(board):
+        solved_board = board
+        return solved_board
+    
+    var = select_unassigned_var(board) # Uses minimum remaining value heuristic
+    for value in ordered_domain_values(var, board):
+        if is_consistent(value, var, board):
+            board[var] = value
+            solved_board = backtracking(board)
+            if solved_board != failure:
+                return solved_board
+            board[var] = 0 # Removes the variable value from board
+    return failure # Returns failure board
 
 
 if __name__ == '__main__':
