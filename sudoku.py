@@ -7,6 +7,7 @@ int values.
 e.g. my_board['A1'] = 8
 """
 import sys
+import time
 
 ROW = "ABCDEFGHI"
 COL = "123456789"
@@ -20,7 +21,6 @@ def print_board(board):
         for j in COL:
             row += (str(board[i + j]) + " ")
         print(row)
-
 
 def board_to_string(board):
     """Helper function to convert board dictionary to string for writing."""
@@ -52,22 +52,21 @@ def  select_unassigned_var(board):
         if board[var] == 0:
             unassigned_vars.append(var)
 
-        #remaining values for each unassigned variable
-        remaining_values = {}
-        for var in unassigned_vars:
-            remaining_values[var] = 0
-            for value in range(1, 10):
-                if is_consistent(value, var, board):
-                    remaining_values[var] += 1
-        #select the unassigned variable with the smallest number of remaining values.
-        min_val = min(remaining_values.values())
-        selected_var = None
-        for var in unassigned_vars:
-            if remaining_values[var] == min_val:
-                selected_var = var
-                break
-            return selected_var
-
+    #remaining values for each unassigned variable
+    remaining_values = {}
+    for var in unassigned_vars:
+        remaining_values[var] = 0
+        for value in range(1, 10):
+            if is_consistent(value, var, board):
+                remaining_values[var] += 1
+    #select the unassigned variable with the smallest number of remaining values.
+    min_val = min(remaining_values.values())
+    selected_var = None
+    for var in unassigned_vars:
+        if remaining_values[var] == min_val:
+            selected_var = var
+            break
+    return selected_var
 
 def ordered_domain_values(var, board):
     """Returns a list of the values in the domain of the variable, sorted inascending order."""
@@ -81,7 +80,6 @@ def ordered_domain_values(var, board):
 def is_consistent(value, var, board):
     #check if the variable value is in the same row
     for var2 in board:
-        print("Variable:", {var2}, "Value:", {board[var2]}) 
         if var2 != var and board[var2] == value and var2[0] == var[0]:
             return False
         
@@ -89,7 +87,7 @@ def is_consistent(value, var, board):
     for var2 in board:
         if var2 != var and board[var2] == value and var2[1] == var[1]:
             return False
-        
+
     #check if the variable value is in the 3x3 grid
     row = var[0]
     col = var[1]
@@ -119,40 +117,29 @@ def backtracking(board):
                 return solved_board
             board[var] = 0 # Removes the variable value from board
     return None # Returns failure board
-
-
+       
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        
         # Running sudoku solver with one board $python3 sudoku.py <input_string>.
         print(sys.argv[1])
         # Parse boards to dict representation, scanning board L to R, Up to Down
+        #start_time  = time.time() 
         board = { ROW[r] + COL[c]: int(sys.argv[1][9*r+c])
-                  for r in range(9) for c in range(9)}       
-        
+                  for r in range(9) for c in range(9)}    
+           
         solved_board = backtracking(board)
 
-        '''
+        #end_time = time.time()
+        #print("Program completed in %.3f second(s)"%(end_time-start_time))
+
         # Write board to file
         out_filename = 'output.txt'
         outfile = open(out_filename, "w")
         outfile.write(board_to_string(solved_board))
         outfile.write('\n') 
 
-
-        for row in ROW:
-            for col in COL:
-                cell_name = row + col
-                cell_value = board[cell_name]
-                print(f"Value of cell {cell_name}: {cell_value}")
-
-        '''
-
-        print_board(board)
-
     else:
         # Running sudoku solver for boards in sudokus_start.txt $python3 sudoku.py
-
         #  Read boards from source.
         src_filename = 'sudokus_start.txt'
         try:
@@ -164,29 +151,41 @@ if __name__ == '__main__':
 
         # Setup output file
         out_filename = 'output.txt'
+        time_filename = 'time.txt'
         outfile = open(out_filename, "w")
-
+        timefile = open(time_filename, "w")
+        num_board = 0
         # Solve each board using backtracking
         for line in sudoku_list.split("\n"):
-
+            num_board += 1
             if len(line) < 9:
                 continue
 
             # Parse boards to dict representation, scanning board L to R, Up to Down
+            start_time  = time.time()
             board = { ROW[r] + COL[c]: int(line[9*r+c])
-                      for r in range(9) for c in range(9)}
+                for r in range(9) for c in range(9)}
             
             # Print starting board. TODO: Comment this out when timing runs.
-            print_board(board)
+            #print_board(board)
 
             # Solve with backtracking
             solved_board = backtracking(board)
 
             # Print solved board. TODO: Comment this out when timing runs.
-            print_board(solved_board)
+            #print_board(solved_board)
+            
+            end_time = time.time()
+            #print("Program completed in %.3f second(s)"%(end_time-start_time))
+            running_time = end_time-start_time
 
             # Write board to file
             outfile.write(board_to_string(solved_board))
             outfile.write('\n')
+            
+            # Write running time to time file
+            #timefile.write(f"Board {num_board}: {running_time:.3f} second(s)\n")
 
         print("Finishing all boards in file.")
+        #outfile.close()
+        #timefile.close()
